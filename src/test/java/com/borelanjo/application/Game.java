@@ -14,28 +14,37 @@ public class Game {
         int primeiroLancamento = 0;
 
         for (int frame = 0; frame < 10; frame++) {
-            int segundoLancamento = primeiroLancamento + 1;
 
             if (isStrike(primeiroLancamento)) {
-                aplicaBonusStrike(primeiroLancamento);
-            }
+                score += calculaBonusStrike(primeiroLancamento);
+            } else {
+                if (isSpare(primeiroLancamento)) {
+                    score += calculaBonusSpare(primeiroLancamento);
+                } else {
+                    score += lancamentos[primeiroLancamento] + proximoLancamento(primeiroLancamento, 1);
+                }
 
-            if (isSpare(primeiroLancamento)) {
-                aplicaBonusSpare(primeiroLancamento);
             }
+            primeiroLancamento += isStrike(primeiroLancamento) ? 1 : 2;
 
-            score += lancamentos[primeiroLancamento];
-            primeiroLancamento++;
         }
         return score;
     }
 
-    private void aplicaBonusStrike(int lancamento) {
-        lancamentos[lancamento] += lancamentos[lancamento+1]+ lancamentos[lancamento+2];
+    private int calculaBonusStrike(int lancamento) {
+        return 10 + proximoDoisLancamentos(lancamento);
     }
 
-    private void aplicaBonusSpare(int lancamento) {
-        lancamentos[lancamento+1] += lancamentos[lancamento+2];
+    private int calculaBonusSpare(int lancamento) {
+        return 10 + proximoLancamento(lancamento, 2);
+    }
+
+    private int proximoLancamento(int lancamento, int i) {
+        return lancamentos[lancamento + i];
+    }
+
+    private int proximoDoisLancamentos(int lancamento) {
+        return proximoLancamento(lancamento, 1) + proximoLancamento(lancamento, 2);
     }
 
     private boolean isSpare(int primeiroLancamento) {
